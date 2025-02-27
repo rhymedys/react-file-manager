@@ -9,12 +9,12 @@ const Progress = ({ percent = 0, isCanceled = false, isCompleted = false, error 
         </div>
       )}
       {isCanceled ? (
-        <span className="fm-upload-canceled">Canceled</span>
+        <span className="fm-upload-canceled">已取消</span>
       ) : error ? (
         <span className="fm-upload-canceled">{error}</span>
       ) : (
         <div className="fm-progress-status">
-          <span>{isCompleted ? "Completed" : percent + "% done"}</span>
+          <span>{isCompleted ? "已完成" : percent + "% 完成"}</span>
         </div>
       )}
     </div>

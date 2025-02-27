@@ -97,9 +97,15 @@ const UploadItem = ({
         handleUploadError(xhr);
       };
 
-      const method = fileUploadConfig?.method || "POST";
-      xhr.open(method, fileUploadConfig?.url, true);
-      const headers = fileUploadConfig?.headers;
+
+      let mapFileUploadConfig = fileUploadConfig
+      if (typeof mapFileUploadConfig === 'function') {
+        mapFileUploadConfig = mapFileUploadConfig()
+      }
+
+      const method = mapFileUploadConfig?.method || "POST";
+      xhr.open(method, mapFileUploadConfig?.url, true);
+      const headers = mapFileUploadConfig?.headers;
       for (let key in headers) {
         xhr.setRequestHeader(key, headers[key]);
       }

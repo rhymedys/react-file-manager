@@ -9,6 +9,7 @@ import { downloadFile } from "./api/downloadFileAPI";
 import "./App.scss";
 
 function App() {
+
   const fileUploadConfig = {
     url: import.meta.env.VITE_API_BASE_URL + "/upload",
   };
@@ -128,6 +129,8 @@ function App() {
   const handleSelect = (files) => {
     console.log("Selected Files", files);
   };
+
+  console.log('import.meta.env.VITE_API_FILES_BASE_URL', import.meta.env.VITE_API_FILES_BASE_URL)
 
   return (
     <div className="app">

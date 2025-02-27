@@ -33,16 +33,16 @@ const UploadFileAction = ({
   const checkFileError = (file) => {
     if (acceptedFileTypes) {
       const extError = !acceptedFileTypes.includes(getFileExtension(file.name));
-      if (extError) return "File type is not allowed.";
+      if (extError) return "文件类型不允许";
     }
 
     const fileExists = currentPathFiles.some(
       (item) => item.name.toLowerCase() === file.name.toLowerCase() && !item.isDirectory
     );
-    if (fileExists) return "File already exists.";
+    if (fileExists) return "当前文件已存在";
 
     const sizeError = maxFileSize && file.size > maxFileSize;
-    if (sizeError) return `Maximum upload size is ${getDataSize(maxFileSize, 0)}.`;
+    if (sizeError) return `最大上传文件大小为${getDataSize(maxFileSize, 0)}.`;
   };
 
   const setSelectedFiles = (selectedFiles) => {
@@ -110,12 +110,12 @@ const UploadFileAction = ({
         >
           <div className="input-text">
             <AiOutlineCloudUpload size={30} />
-            <span>Drag files to upload</span>
+            <span>拖拽文件此处上传</span>
           </div>
         </div>
         <div className="btn-choose-file">
           <Button padding="0" onKeyDown={handleChooseFileKeyDown}>
-            <label htmlFor="chooseFile">Choose File</label>
+            <label htmlFor="chooseFile">选择文件</label>
             <input
               ref={fileInputRef}
               type="file"
@@ -133,11 +133,11 @@ const UploadFileAction = ({
           <div className="heading">
             {Object.values(isUploading).some((fileUploading) => fileUploading) ? (
               <>
-                <h2>Uploading</h2>
+                <h2>上传中...</h2>
                 <Loader loading={true} className="upload-loading" />
               </>
             ) : (
-              <h2>Completed</h2>
+              <h2>已完成</h2>
             )}
           </div>
           <ul>

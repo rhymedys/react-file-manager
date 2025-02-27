@@ -85,12 +85,13 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
 
   const emptySelecCtxItems = [
     {
-      title: "View",
+      title: "切换视图",
+      key: 'activeLayout',
       icon: activeLayout === "grid" ? <BsGrid size={18} /> : <FaListUl size={18} />,
-      onClick: () => {},
+      onClick: () => { },
       children: [
         {
-          title: "Grid",
+          title: "网格",
           icon: <BsGrid size={18} />,
           selected: activeLayout === "grid",
           onClick: () => {
@@ -99,7 +100,7 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
           },
         },
         {
-          title: "List",
+          title: "列表",
           icon: <FaListUl size={18} />,
           selected: activeLayout === "list",
           onClick: () => {
@@ -110,24 +111,28 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
       ],
     },
     {
-      title: "Refresh",
+      title: "刷新",
+      key: 'handleRefresh',
       icon: <FiRefreshCw size={18} />,
       onClick: handleRefresh,
       divider: true,
     },
     {
-      title: "New folder",
+      title: "新建文件夹",
+      key: 'handleCreateNewFolder',
       icon: <BsFolderPlus size={18} />,
       onClick: handleCreateNewFolder,
     },
     {
-      title: "Upload",
+      title: "上传",
+      key: 'handleUpload',
       icon: <MdOutlineFileUpload size={18} />,
       onClick: handleUpload,
       divider: true,
     },
     {
-      title: "Select all",
+      title: "全选",
+      key: 'handleSelectAllFiles',
       icon: <BiSelectMultiple size={18} />,
       onClick: handleselectAllFiles,
     },
@@ -135,46 +140,54 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
 
   const selecCtxItems = [
     {
-      title: "Open",
+      title: "打开",
       icon: lastSelectedFile?.isDirectory ? <PiFolderOpen size={20} /> : <FaRegFile size={16} />,
       onClick: handleFileOpen,
+      key: 'handleFileOpen',
       divider: true,
     },
     {
-      title: "Cut",
+      title: "剪切",
       icon: <BsScissors size={19} />,
       onClick: () => handleMoveOrCopyItems(true),
+      key: 'cut',
     },
     {
-      title: "Copy",
+      title: "复制",
       icon: <BsCopy strokeWidth={0.1} size={17} />,
       onClick: () => handleMoveOrCopyItems(false),
       divider: !lastSelectedFile?.isDirectory,
+      key: 'copy'
     },
     {
-      title: "Paste",
+      title: "粘贴",
       icon: <FaRegPaste size={18} />,
       onClick: handleFilePasting,
       className: `${clipBoard ? "" : "disable-paste"}`,
       hidden: !lastSelectedFile?.isDirectory,
       divider: true,
+      key: 'handleFilePasting'
     },
     {
-      title: "Rename",
+      title: "重命名",
       icon: <BiRename size={19} />,
       onClick: handleRenaming,
       hidden: selectedFiles.length > 1,
+      key: 'handleRenaming'
+
     },
     {
-      title: "Download",
+      title: "下载",
       icon: <MdOutlineFileDownload size={18} />,
       onClick: handleDownloadItems,
+      key: 'handleDownloadItems',
       hidden: lastSelectedFile?.isDirectory,
     },
     {
-      title: "Delete",
+      title: "删除",
       icon: <MdOutlineDelete size={19} />,
       onClick: handleDelete,
+      key: 'handleDelete'
     },
   ];
   //
@@ -184,7 +197,7 @@ const useFileList = (onRefresh, enableFilePreview, triggerAction) => {
       return [
         ...prev,
         {
-          name: duplicateNameHandler("New Folder", true, prev),
+          name: duplicateNameHandler("新建文件夹", true, prev),
           isDirectory: true,
           path: currentPath,
           isEditing: true,

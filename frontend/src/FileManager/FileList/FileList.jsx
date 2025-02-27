@@ -65,7 +65,7 @@ const FileList = ({
           ))}
         </>
       ) : (
-        <div className="empty-folder">This folder is empty.</div>
+        <div className="empty-folder">文件夹内容为空</div>
       )}
 
       <ContextMenu

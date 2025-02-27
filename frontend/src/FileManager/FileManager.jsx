@@ -20,19 +20,19 @@ const FileManager = ({
   fileUploadConfig,
   isLoading,
   onCreateFolder,
-  onFileUploading = () => {},
-  onFileUploaded = () => {},
+  onFileUploading = () => { },
+  onFileUploaded = () => { },
   onCut,
   onCopy,
   onPaste,
   onRename,
   onDownload,
   onDelete = () => null,
-  onLayoutChange = () => {},
+  onLayoutChange = () => { },
   onRefresh,
-  onFileOpen = () => {},
+  onFileOpen = () => { },
   onSelect,
-  onError = () => {},
+  onError = () => { },
   layout = "grid",
   enableFilePreview = true,
   maxFileSize,
@@ -42,8 +42,11 @@ const FileManager = ({
   width = "100%",
   initialPath = "",
   filePreviewComponent,
+  allowCreateFolder,
+  allowUploadFile,
   primaryColor = "#6155b4",
   fontFamily = "Nunito Sans, sans-serif",
+
 }) => {
   const triggerAction = useTriggerAction();
   const { containerRef, colSizes, isDragging, handleMouseMove, handleMouseUp, handleMouseDown } =
@@ -57,15 +60,15 @@ const FileManager = ({
 
   return (
     <main className="file-explorer" onContextMenu={(e) => e.preventDefault()} style={customStyles}>
-      <Loader loading={isLoading} />
+      <Loader loading={true} />
       <FilesProvider filesData={files} onError={onError}>
         <FileNavigationProvider initialPath={initialPath}>
           <SelectionProvider onDownload={onDownload} onSelect={onSelect}>
             <ClipBoardProvider onPaste={onPaste} onCut={onCut} onCopy={onCopy}>
               <LayoutProvider layout={layout}>
                 <Toolbar
-                  allowCreateFolder
-                  allowUploadFile
+                  allowCreateFolder={allowCreateFolder}
+                  allowUploadFile={allowUploadFile}
                   onLayoutChange={onLayoutChange}
                   onRefresh={onRefresh}
                   triggerAction={triggerAction}
@@ -77,7 +80,9 @@ const FileManager = ({
                   className="files-container"
                 >
                   <div className="navigation-pane" style={{ width: colSizes.col1 + "%" }}>
-                    <NavigationPane />
+                    <NavigationPane
+                      onFileOpen={onFileOpen}
+                    />
                     <div
                       className={`sidebar-resize ${isDragging ? "sidebar-dragging" : ""}`}
                       onMouseDown={handleMouseDown}
@@ -85,7 +90,9 @@ const FileManager = ({
                   </div>
 
                   <div className="folders-preview" style={{ width: colSizes.col2 + "%" }}>
-                    <BreadCrumb />
+                    <BreadCrumb
+                      onFileOpen={onFileOpen}
+                    />
                     <FileList
                       onCreateFolder={onCreateFolder}
                       onRename={onRename}
@@ -161,6 +168,8 @@ FileManager.propTypes = {
   filePreviewComponent: PropTypes.func,
   primaryColor: PropTypes.string,
   fontFamily: PropTypes.string,
+  allowCreateFolder: PropTypes.bool | PropTypes.func,
+  allowUploadFile: PropTypes.bool | PropTypes.func
 };
 
 export default FileManager;

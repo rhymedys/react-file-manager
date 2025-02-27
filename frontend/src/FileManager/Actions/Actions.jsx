@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "../../components/Modal/Modal";
 import DeleteAction from "./Delete/Delete.action";
 import UploadFileAction from "./UploadFile/UploadFile.action";
@@ -24,9 +24,20 @@ const Actions = ({
   // Triggers all the keyboard shortcuts based actions
   useShortcutHandler(triggerAction, onRefresh);
 
+
+  const setShowProxy = (...args) => {
+
+    triggerAction.close(...args);
+
+    const actionType = triggerAction.actionType;
+    if (actionType === "uploadFile") {
+      onRefresh && onRefresh()
+    }
+  }
+
   const actionTypes = {
     uploadFile: {
-      title: "Upload",
+      title: "上传文件",
       component: (
         <UploadFileAction
           fileUploadConfig={fileUploadConfig}
@@ -39,12 +50,12 @@ const Actions = ({
       width: "35%",
     },
     delete: {
-      title: "Delete",
+      title: "删除",
       component: <DeleteAction triggerAction={triggerAction} onDelete={onDelete} />,
       width: "25%",
     },
     previewFile: {
-      title: "Preview",
+      title: "预览",
       component: (
         <PreviewFileAction
           filePreviewPath={filePreviewPath}
@@ -59,7 +70,7 @@ const Actions = ({
     if (triggerAction.isActive) {
       const actionType = triggerAction.actionType;
       if (actionType === "previewFile") {
-        actionTypes[actionType].title = selectedFiles?.name ?? "Preview";
+        actionTypes[actionType].title = selectedFiles?.name ?? "预览";
       }
       setActiveAction(actionTypes[actionType]);
     } else {
@@ -67,12 +78,14 @@ const Actions = ({
     }
   }, [triggerAction.isActive]);
 
+
+
   if (activeAction) {
     return (
       <Modal
         heading={activeAction.title}
         show={triggerAction.isActive}
-        setShow={triggerAction.close}
+        setShow={setShowProxy}
         dialogWidth={activeAction.width}
       >
         {activeAction?.component}

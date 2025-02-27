@@ -3,14 +3,18 @@ import { MdHome, MdMoreHoriz, MdOutlineNavigateNext } from "react-icons/md";
 import { useFileNavigation } from "../../contexts/FileNavigationContext";
 import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
 import "./BreadCrumb.scss";
+import { useFiles } from "../../contexts/FilesContext";
 
-const BreadCrumb = () => {
+const BreadCrumb = ({
+  onFileOpen
+}) => {
   const [folders, setFolders] = useState([]);
   const [hiddenFolders, setHiddenFolders] = useState([]);
   const [hiddenFoldersWidth, setHiddenFoldersWidth] = useState([]);
   const [showHiddenFolders, setShowHiddenFolders] = useState(false);
 
   const { currentPath, setCurrentPath } = useFileNavigation();
+  const { files } = useFiles()
   const breadCrumbRef = useRef(null);
   const foldersRef = useRef([]);
   const moreBtnRef = useRef(null);
@@ -23,7 +27,7 @@ const BreadCrumb = () => {
       let path = "";
       return currentPath?.split("/").map((item) => {
         return {
-          name: item || "Home",
+          name: item || "主页",
           path: item === "" ? item : (path += `/${item}`),
         };
       });
@@ -59,6 +63,19 @@ const BreadCrumb = () => {
     return breadCrumbRef.current.scrollWidth > breadCrumbRef.current.clientWidth;
   };
 
+  const onFileOpenProxy = (folder) => {
+    let res
+    for (const item of files) {
+      if (item.path === folder.path) {
+        res = item
+        break;
+      }
+    }
+
+    onFileOpen(res)
+
+  }
+
   useEffect(() => {
     if (isBreadCrumbOverflowing()) {
       const hiddenFolder = folders[1];
@@ -81,7 +98,10 @@ const BreadCrumb = () => {
           <div key={index} style={{ display: "contents" }}>
             <span
               className="folder-name"
-              onClick={() => switchPath(folder.path)}
+              onClick={() => {
+                switchPath(folder.path)
+                onFileOpenProxy(folder)
+              }}
               ref={(el) => (foldersRef.current[index] = el)}
             >
               {index === 0 ? <MdHome /> : <MdOutlineNavigateNext />}
@@ -109,6 +129,7 @@ const BreadCrumb = () => {
               onClick={() => {
                 switchPath(folder.path);
                 setShowHiddenFolders(false);
+                onFileOpenProxy(folder)
               }}
             >
               {folder.name}

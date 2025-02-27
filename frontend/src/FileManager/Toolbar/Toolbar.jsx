@@ -9,7 +9,6 @@ import {
 } from "react-icons/md";
 import { BiRename } from "react-icons/bi";
 import { FaListUl, FaRegPaste } from "react-icons/fa6";
-import LayoutToggler from "./LayoutToggler";
 import { useFileNavigation } from "../../contexts/FileNavigationContext";
 import { useSelection } from "../../contexts/SelectionContext";
 import { useClipBoard } from "../../contexts/ClipboardContext";
@@ -24,29 +23,38 @@ const Toolbar = ({
   onRefresh,
   triggerAction,
 }) => {
-  const [showToggleViewMenu, setShowToggleViewMenu] = useState(false);
   const { currentFolder } = useFileNavigation();
   const { selectedFiles, setSelectedFiles, handleDownload } = useSelection();
   const { clipBoard, setClipBoard, handleCutCopy, handlePasting } = useClipBoard();
-  const { activeLayout } = useLayout();
+  const { activeLayout, setActiveLayout } = useLayout();
 
+  let mapAllowCreateFolder = allowCreateFolder
+
+  let mapAllowUploadFile = allowUploadFile
+  if (typeof mapAllowCreateFolder === 'function') {
+    mapAllowCreateFolder = allowCreateFolder()
+  }
+
+  if (typeof mapAllowUploadFile === 'function') {
+    mapAllowUploadFile = mapAllowUploadFile()
+  }
   // Toolbar Items
   const toolbarLeftItems = [
     {
       icon: <BsFolderPlus size={17} strokeWidth={0.3} />,
-      text: "New folder",
-      permission: allowCreateFolder,
+      text: "新建文件夹",
+      permission: mapAllowCreateFolder,
       onClick: () => triggerAction.show("createFolder"),
     },
     {
       icon: <MdOutlineFileUpload size={18} />,
-      text: "Upload",
-      permission: allowUploadFile,
+      text: "上传文件",
+      permission: mapAllowUploadFile,
       onClick: () => triggerAction.show("uploadFile"),
     },
     {
       icon: <FaRegPaste size={18} />,
-      text: "Paste",
+      text: "粘贴文件/文件夹",
       permission: !!clipBoard,
       onClick: handleFilePasting,
     },
@@ -55,12 +63,20 @@ const Toolbar = ({
   const toolbarRightItems = [
     {
       icon: activeLayout === "grid" ? <BsGridFill size={16} /> : <FaListUl size={16} />,
-      title: "Change View",
-      onClick: () => setShowToggleViewMenu((prev) => !prev),
+      title: "切换试图",
+      onClick: () => {
+        if (activeLayout === 'grid') {
+          // activeLayout = 'list';
+
+          setActiveLayout('list');
+        } else if (activeLayout === 'list') {
+          setActiveLayout('grid');
+        }
+      },
     },
     {
       icon: <FiRefreshCw size={16} />,
-      title: "Refresh",
+      title: "刷新",
       onClick: () => {
         validateApiCallback(onRefresh, "onRefresh");
         setClipBoard(null);
@@ -85,20 +101,20 @@ const Toolbar = ({
           <div>
             <button className="item-action file-action" onClick={() => handleCutCopy(true)}>
               <BsScissors size={18} />
-              <span>Cut</span>
+              <span>剪切</span>
             </button>
             <button className="item-action file-action" onClick={() => handleCutCopy(false)}>
               <BsCopy strokeWidth={0.1} size={17} />
-              <span>Copy</span>
+              <span>复制</span>
             </button>
             {clipBoard?.files?.length > 0 && (
               <button
                 className="item-action file-action"
                 onClick={handleFilePasting}
-                // disabled={!clipBoard}
+              // disabled={!clipBoard}
               >
                 <FaRegPaste size={18} />
-                <span>Paste</span>
+                <span>粘贴</span>
               </button>
             )}
             {selectedFiles.length === 1 && (
@@ -107,13 +123,13 @@ const Toolbar = ({
                 onClick={() => triggerAction.show("rename")}
               >
                 <BiRename size={19} />
-                <span>Rename</span>
+                <span>重命名</span>
               </button>
             )}
             {!selectedFiles.isDirectory && (
               <button className="item-action file-action" onClick={handleDownloadItems}>
                 <MdOutlineFileDownload size={19} />
-                <span>Download</span>
+                <span>下载</span>
               </button>
             )}
             <button
@@ -121,7 +137,7 @@ const Toolbar = ({
               onClick={() => triggerAction.show("delete")}
             >
               <MdOutlineDelete size={19} />
-              <span>Delete</span>
+              <span>删除</span>
             </button>
           </div>
           <button
@@ -130,7 +146,7 @@ const Toolbar = ({
             onClick={() => setSelectedFiles([])}
           >
             <span>
-              {selectedFiles.length} item{selectedFiles.length > 1 && "s"} selected
+              已选中 {selectedFiles.length} 项
             </span>
             <MdClear size={18} />
           </button>
@@ -163,12 +179,6 @@ const Toolbar = ({
             </div>
           ))}
 
-          {showToggleViewMenu && (
-            <LayoutToggler
-              setShowToggleViewMenu={setShowToggleViewMenu}
-              onLayoutChange={onLayoutChange}
-            />
-          )}
         </div>
       </div>
     </div>

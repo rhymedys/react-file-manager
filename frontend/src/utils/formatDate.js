@@ -4,7 +4,7 @@ export const formatDate = (date) => {
   date = new Date(date);
   let hours = date.getHours();
   const minutes = date.getMinutes();
-  const ampm = hours >= 12 ? "PM" : "AM";
+  const ampm = hours >= 12 ? "下午" : "上午";
   hours = hours % 12;
   hours = hours ? hours : 12;
   const month = date.getMonth() + 1;

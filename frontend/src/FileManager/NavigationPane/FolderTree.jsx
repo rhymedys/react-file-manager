@@ -4,7 +4,7 @@ import { FaRegFolder, FaRegFolderOpen } from "react-icons/fa";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { useFileNavigation } from "../../contexts/FileNavigationContext";
 
-const FolderTree = ({ folder }) => {
+const FolderTree = ({ folder, onFileOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const { currentPath, setCurrentPath } = useFileNavigation();
@@ -12,6 +12,7 @@ const FolderTree = ({ folder }) => {
   const handleFolderSwitch = () => {
     setIsActive(true);
     setCurrentPath(folder.path);
+    onFileOpen(folder)
   };
 
   const handleCollapseChange = (e) => {
@@ -61,7 +62,7 @@ const FolderTree = ({ folder }) => {
         <Collapse open={isOpen}>
           <div className="folder-collapsible">
             {folder.subDirectories.map((item, index) => (
-              <FolderTree key={index} folder={item} />
+              <FolderTree key={index} folder={item} onFileOpen={onFileOpen} />
             ))}
           </div>
         </Collapse>
