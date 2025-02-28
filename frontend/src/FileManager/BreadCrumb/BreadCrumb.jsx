@@ -112,7 +112,7 @@ const BreadCrumb = ({
                 className="folder-name folder-name-btn"
                 onClick={() => setShowHiddenFolders(true)}
                 ref={moreBtnRef}
-                title="Show more folders"
+                title="显示更多文件夹"
               >
                 <MdMoreHoriz size={22} className="hidden-folders" />
               </button>

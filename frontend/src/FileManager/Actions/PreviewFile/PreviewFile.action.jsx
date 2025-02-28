@@ -66,7 +66,7 @@ const PreviewFileAction = ({ filePreviewPath, filePreviewComponent }) => {
             <Button onClick={handleDownload} padding="0.45rem .9rem">
               <div className="download-btn">
                 <MdOutlineFileDownload size={18} />
-                <span>Download</span>
+                <span>下载</span>
               </div>
             </Button>
           </div>

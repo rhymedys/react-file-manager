@@ -84,7 +84,9 @@ function App() {
   //
 
   // Paste File/Folder
-  const handlePaste = async (copiedItems, destinationFolder, operationType) => {
+  const handlePaste = async (obj) => {
+    console.log('pasted file', obj)
+    const { copiedItems, destinationFolder, operationType } = obj
     setIsLoading(true);
     const copiedItemIds = copiedItems.map((item) => item._id);
     if (operationType === "copy") {

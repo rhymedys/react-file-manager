@@ -15,6 +15,7 @@ const FileList = ({
   onRefresh,
   enableFilePreview,
   triggerAction,
+  onGenerateOperationCb
 }) => {
   const { currentPathFiles } = useFileNavigation();
   const filesViewRef = useRef(null);
@@ -34,6 +35,12 @@ const FileList = ({
   } = useFileList(onRefresh, enableFilePreview, triggerAction);
 
   const contextMenuRef = useDetectOutsideClick(() => setVisible(false));
+
+
+  let menuItems = isSelectionCtx ? selecCtxItems : emptySelecCtxItems
+
+
+  menuItems = onGenerateOperationCb(menuItems)
 
   return (
     <div
@@ -68,10 +75,12 @@ const FileList = ({
         <div className="empty-folder">文件夹内容为空</div>
       )}
 
+
+
       <ContextMenu
         filesViewRef={filesViewRef}
         contextMenuRef={contextMenuRef.ref}
-        menuItems={isSelectionCtx ? selecCtxItems : emptySelecCtxItems}
+        menuItems={menuItems}
         visible={visible}
         setVisible={setVisible}
         clickPosition={clickPosition}

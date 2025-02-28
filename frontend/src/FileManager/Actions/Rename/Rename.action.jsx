@@ -173,8 +173,7 @@ const RenameAction = ({ filesViewRef, file, onRename, triggerAction }) => {
             <div className="fm-rename-warning">
               <IoWarningOutline size={70} color="orange" />
               <div>
-                If you change a file name extension, the file might become unusable. Are you sure
-                you want to change it?
+                如果更改文件扩展名，则文件可能无法使用。你确定你想改变它吗？
               </div>
             </div>
           </div>
@@ -194,7 +193,7 @@ const RenameAction = ({ filesViewRef, file, onRename, triggerAction }) => {
                 triggerAction.close();
               }}
             >
-              No
+              否
             </Button>
             <Button
               type="danger"
@@ -203,7 +202,7 @@ const RenameAction = ({ filesViewRef, file, onRename, triggerAction }) => {
                 handleFileRenaming(true);
               }}
             >
-              Yes
+              是
             </Button>
           </div>
         </div>

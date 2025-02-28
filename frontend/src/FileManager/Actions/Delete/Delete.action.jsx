@@ -10,9 +10,9 @@ const DeleteAction = ({ triggerAction, onDelete }) => {
   useEffect(() => {
     setDeleteMsg(() => {
       if (selectedFiles.length === 1) {
-        return `Are you sure you want to delete "${selectedFiles[0].name}"?`;
+        return `您确定要删除"${selectedFiles[0].name}"?`;
       } else if (selectedFiles.length > 1) {
-        return `Are you sure you want to delete these ${selectedFiles.length} items?`;
+        return `您确定要删除这${selectedFiles.length}项?`;
       }
     });
   }, []);
@@ -28,10 +28,10 @@ const DeleteAction = ({ triggerAction, onDelete }) => {
       <p className="file-delete-confirm-text">{deleteMsg}</p>
       <div className="file-delete-confirm-actions">
         <Button type="secondary" onClick={() => triggerAction.close()}>
-          Cancel
+          取消
         </Button>
         <Button type="danger" onClick={handleDeleting}>
-          Delete
+          删除
         </Button>
       </div>
     </div>

@@ -15,8 +15,16 @@ export const FilesProvider = ({ children, filesData, onError }) => {
     return files.filter((child) => child.path === `${file.path}/${child.name}`);
   };
 
+  const invokeGetFileMap = (type = 'path') => {
+    const fileMap = {};
+    files.forEach((file) => {
+      fileMap[file[type]] = file;
+    });
+    return fileMap;
+  }
+
   return (
-    <FilesContext.Provider value={{ files, setFiles, getChildren, onError }}>
+    <FilesContext.Provider value={{ files, setFiles, getChildren, onError, invokeGetFileMap }}>
       {children}
     </FilesContext.Provider>
   );

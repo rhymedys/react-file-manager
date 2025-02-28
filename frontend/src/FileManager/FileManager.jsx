@@ -15,6 +15,10 @@ import PropTypes from "prop-types";
 import { dateStringValidator, urlValidator } from "../validators/propValidators";
 import "./FileManager.scss";
 
+
+
+
+
 const FileManager = ({
   files,
   fileUploadConfig,
@@ -27,11 +31,14 @@ const FileManager = ({
   onPaste,
   onRename,
   onDownload,
+  onDeleteApi = () => { },
+  onPasteWarn,
   onDelete = () => null,
   onLayoutChange = () => { },
   onRefresh,
   onFileOpen = () => { },
   onSelect,
+  onGenerateOperationCb = (obj) => obj,
   onError = () => { },
   layout = "grid",
   enableFilePreview = true,
@@ -60,11 +67,11 @@ const FileManager = ({
 
   return (
     <main className="file-explorer" onContextMenu={(e) => e.preventDefault()} style={customStyles}>
-      <Loader loading={true} />
+      <Loader loading={isLoading} />
       <FilesProvider filesData={files} onError={onError}>
         <FileNavigationProvider initialPath={initialPath}>
           <SelectionProvider onDownload={onDownload} onSelect={onSelect}>
-            <ClipBoardProvider onPaste={onPaste} onCut={onCut} onCopy={onCopy}>
+            <ClipBoardProvider onPaste={onPaste} onCut={onCut} onCopy={onCopy} onPasteWarn={onPasteWarn} onDelete={onDelete}>
               <LayoutProvider layout={layout}>
                 <Toolbar
                   allowCreateFolder={allowCreateFolder}
@@ -72,6 +79,7 @@ const FileManager = ({
                   onLayoutChange={onLayoutChange}
                   onRefresh={onRefresh}
                   triggerAction={triggerAction}
+                  onGenerateOperationCb={onGenerateOperationCb}
                 />
                 <section
                   ref={containerRef}
@@ -100,6 +108,7 @@ const FileManager = ({
                       onRefresh={onRefresh}
                       enableFilePreview={enableFilePreview}
                       triggerAction={triggerAction}
+                      onGenerateOperationCb={onGenerateOperationCb}
                     />
                   </div>
                 </section>
@@ -148,9 +157,11 @@ FileManager.propTypes = {
   onFileUploaded: PropTypes.func,
   onRename: PropTypes.func,
   onDelete: PropTypes.func,
+  onDeleteApi: PropTypes.func,
   onCut: PropTypes.func,
   onCopy: PropTypes.func,
   onPaste: PropTypes.func,
+  onPasteWarn: PropTypes.func,
   onDownload: PropTypes.func,
   onLayoutChange: PropTypes.func,
   onRefresh: PropTypes.func,
@@ -166,6 +177,7 @@ FileManager.propTypes = {
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   initialPath: PropTypes.string,
   filePreviewComponent: PropTypes.func,
+  onGenerateOperationCb: PropTypes.func,
   primaryColor: PropTypes.string,
   fontFamily: PropTypes.string,
   allowCreateFolder: PropTypes.bool | PropTypes.func,

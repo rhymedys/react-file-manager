@@ -111,7 +111,10 @@ const UploadItem = ({
       }
 
       const formData = new FormData();
-      const appendData = fileData?.appendData;
+      const appendData = fileData?.appendData || {};
+      if (mapFileUploadConfig?.appendData) {
+        Object.assign(appendData, mapFileUploadConfig?.appendData)
+      }
       for (let key in appendData) {
         appendData[key] && formData.append(key, appendData[key]);
       }

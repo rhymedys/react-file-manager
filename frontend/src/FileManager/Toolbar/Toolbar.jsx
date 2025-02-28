@@ -22,6 +22,7 @@ const Toolbar = ({
   onLayoutChange,
   onRefresh,
   triggerAction,
+  onGenerateOperationCb
 }) => {
   const { currentFolder } = useFileNavigation();
   const { selectedFiles, setSelectedFiles, handleDownload } = useSelection();
@@ -39,26 +40,30 @@ const Toolbar = ({
     mapAllowUploadFile = mapAllowUploadFile()
   }
   // Toolbar Items
-  const toolbarLeftItems = [
+  let toolbarLeftItems = [
     {
       icon: <BsFolderPlus size={17} strokeWidth={0.3} />,
       text: "新建文件夹",
+      key: 'createFolder',
       permission: mapAllowCreateFolder,
       onClick: () => triggerAction.show("createFolder"),
     },
     {
       icon: <MdOutlineFileUpload size={18} />,
       text: "上传文件",
+      key: 'uploadFile',
       permission: mapAllowUploadFile,
       onClick: () => triggerAction.show("uploadFile"),
     },
     {
       icon: <FaRegPaste size={18} />,
       text: "粘贴文件/文件夹",
+      key: 'paste',
       permission: !!clipBoard,
       onClick: handleFilePasting,
     },
   ];
+  toolbarLeftItems = onGenerateOperationCb(toolbarLeftItems)
 
   const toolbarRightItems = [
     {
@@ -75,6 +80,7 @@ const Toolbar = ({
       },
     },
     {
+      
       icon: <FiRefreshCw size={16} />,
       title: "刷新",
       onClick: () => {
@@ -83,6 +89,7 @@ const Toolbar = ({
       },
     },
   ];
+
 
   function handleFilePasting() {
     handlePasting(currentFolder);
@@ -95,11 +102,61 @@ const Toolbar = ({
 
   // Selected File/Folder Actions
   if (selectedFiles.length > 0) {
+
+
+    let arr = [
+      {
+        icon: <BsScissors size={18} />,
+        text: "剪切",
+        key: "cut",
+        onClick: () => handleCutCopy(true),
+      },
+      {
+        icon: <BsCopy strokeWidth={0.1} size={17} />,
+        text: "复制",
+        key: "copy",
+        onClick: () => handleCutCopy(false),
+      },
+      clipBoard?.files?.length > 0 && {
+        icon: <FaRegPaste size={18} />,
+        text: "粘贴",
+        key: "paste",
+        onClick: handleFilePasting,
+      },
+      selectedFiles.length === 1 && {
+        icon: <BiRename size={19} />,
+        text: "重命名",
+        key: "rename",
+        onClick: () => triggerAction.show("rename"),
+      },
+      !selectedFiles.isDirectory && {
+        icon: <MdOutlineFileDownload size={19} />,
+        text: "下载",
+        key: "download",
+        onClick: handleDownloadItems,
+      },
+    ].filter(v => v)
+
+    arr = onGenerateOperationCb(arr)
+
+
     return (
       <div className="toolbar file-selected">
         <div className="file-action-container">
           <div>
-            <button className="item-action file-action" onClick={() => handleCutCopy(true)}>
+            {
+              arr.map((item, index) => (
+                <button
+                  key={index}
+                  className="item-action file-action"
+                  onClick={item.onClick}
+                >
+                  {item.icon}
+                  <span>{item.text}</span>
+                </button>
+              ))
+            }
+            {/* <button className="item-action file-action" onClick={() => handleCutCopy(true)}>
               <BsScissors size={18} />
               <span>剪切</span>
             </button>
@@ -138,7 +195,7 @@ const Toolbar = ({
             >
               <MdOutlineDelete size={19} />
               <span>删除</span>
-            </button>
+            </button> */}
           </div>
           <button
             className="item-action file-action"
