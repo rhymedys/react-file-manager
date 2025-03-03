@@ -123,6 +123,8 @@ const UploadFileAction = ({
               className="choose-file-input"
               onChange={handleChooseFile}
               multiple
+              webkitdirectory
+              directory
               accept={acceptedFileTypes}
             />
           </Button>

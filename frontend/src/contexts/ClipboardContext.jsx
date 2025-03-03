@@ -25,11 +25,14 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
 
   // Todo: Show error if destination folder already has file(s) with the same name
   const handlePasting = async (destinationFolder) => {
-    if (destinationFolder && !destinationFolder.isDirectory) return;
+    if (destinationFolder && !destinationFolder.isDirectory || !clipBoard) return;
 
     const filesMap = invokeGetFileMap()
 
     const operationType = clipBoard.isMoving ? "move" : "copy";
+
+    let copiedFiles
+
 
     const newFiles = []
 
@@ -38,7 +41,26 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
     const deleteFiles = []
 
 
+    // if (
+    //   operationType === 'copy'
+    // ) {
     clipBoard.files.forEach(v => {
+      v = JSON.parse(
+        JSON.stringify(v)
+      )
+
+      if (destinationFolder) {
+
+        const newPath = destinationFolder.path + '/' + v.name
+
+        if (v.path === newPath) {
+          return
+        }
+
+        v.path = newPath
+      }
+
+
       if (!filesMap[v.path]) {
         newFiles.push(v)
       } else {
@@ -46,8 +68,10 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
       }
     })
 
-
-    if (onPasteWarn && sameFiles.length) {
+    if (
+      onPasteWarn &&
+      sameFiles.length
+    ) {
       const invokeWarn = async (arr) => {
 
         let sameFile = arr.splice(0, 1)
@@ -69,7 +93,15 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
       }
 
       await invokeWarn(sameFiles)
+
     }
+
+
+    copiedFiles = newFiles;
+
+    // } else {
+    //   copiedFiles = clipBoard.files
+    // }
 
 
 
@@ -82,9 +114,10 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
     // destinationFolder.path = copiedFiles.
 
     // console.log('files', files)
-    const copiedFiles = newFiles;
+    if (copiedFiles.length) {
+      validateApiCallback(onPaste, "onPaste", { copiedFiles, destinationFolder, operationType, deleteFiles });
+    }
 
-    validateApiCallback(onPaste, "onPaste", { copiedFiles, destinationFolder, operationType, deleteFiles });
 
     clipBoard.isMoving && setClipBoard(null);
     setSelectedFiles([]);
