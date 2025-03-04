@@ -80,7 +80,7 @@ const Toolbar = ({
       },
     },
     {
-      
+
       icon: <FiRefreshCw size={16} />,
       title: "刷新",
       onClick: () => {
@@ -137,7 +137,11 @@ const Toolbar = ({
       },
     ].filter(v => v)
 
-    arr = onGenerateOperationCb(arr)
+    arr = onGenerateOperationCb(arr, {
+      type: 'toolbar',
+      setSelectedFiles,
+      setClipBoard
+    })
 
 
     return (

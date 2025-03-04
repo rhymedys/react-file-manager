@@ -62,7 +62,7 @@ const UploadItem = ({
   const fileUpload = (fileData) => {
     if (!!fileData.error) return;
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhrRef.current = xhr;
       setIsUploading((prev) => ({
@@ -100,7 +100,7 @@ const UploadItem = ({
 
       let mapFileUploadConfig = fileUploadConfig
       if (typeof mapFileUploadConfig === 'function') {
-        mapFileUploadConfig = mapFileUploadConfig()
+        mapFileUploadConfig = await mapFileUploadConfig(fileData)
       }
 
       const method = mapFileUploadConfig?.method || "POST";
@@ -119,6 +119,7 @@ const UploadItem = ({
         appendData[key] && formData.append(key, appendData[key]);
       }
       formData.append("file", fileData.file);
+
 
       xhr.send(formData);
     });

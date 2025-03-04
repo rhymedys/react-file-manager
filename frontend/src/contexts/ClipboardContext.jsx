@@ -25,7 +25,12 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
 
   // Todo: Show error if destination folder already has file(s) with the same name
   const handlePasting = async (destinationFolder) => {
-    if (destinationFolder && !destinationFolder.isDirectory || !clipBoard) return;
+    console.log('handlePasting', destinationFolder)
+    if (
+      !destinationFolder ||
+      (destinationFolder && !destinationFolder.isDirectory) ||
+      !clipBoard
+    ) return;
 
     const filesMap = invokeGetFileMap()
 
@@ -39,6 +44,7 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
     const sameFiles = []
 
     const deleteFiles = []
+
 
 
     // if (
@@ -114,7 +120,7 @@ export const ClipBoardProvider = ({ children, onPaste, onCut, onCopy, onPasteWar
     // destinationFolder.path = copiedFiles.
 
     // console.log('files', files)
-    if (copiedFiles.length) {
+    if (copiedFiles.length && destinationFolder) {
       validateApiCallback(onPaste, "onPaste", { copiedFiles, destinationFolder, operationType, deleteFiles });
     }
 

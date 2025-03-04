@@ -6,6 +6,9 @@ import ContextMenu from "../../components/ContextMenu/ContextMenu";
 import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
 import useFileList from "./useFileList";
 import FilesHeader from "./FilesHeader";
+import { useSelection } from "../../contexts/SelectionContext";
+import { useClipBoard } from "../../contexts/ClipboardContext";
+
 import "./FileList.scss";
 
 const FileList = ({
@@ -20,6 +23,8 @@ const FileList = ({
   const { currentPathFiles } = useFileNavigation();
   const filesViewRef = useRef(null);
   const { activeLayout } = useLayout();
+  const { selectedFiles, setSelectedFiles, handleDownload } = useSelection();
+  const { clipBoard, setClipBoard, handleCutCopy, handlePasting } = useClipBoard();
 
   const {
     emptySelecCtxItems,
@@ -40,7 +45,12 @@ const FileList = ({
   let menuItems = isSelectionCtx ? selecCtxItems : emptySelecCtxItems
 
 
-  menuItems = onGenerateOperationCb(menuItems)
+  menuItems = onGenerateOperationCb(menuItems, {
+    type: isSelectionCtx ? 'selecCtxItems' : 'emptySelecCtxItems',
+    setSelectedFiles,
+    setClipBoard,
+    setVisible
+  })
 
   return (
     <div
